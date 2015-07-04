@@ -132,7 +132,7 @@
 		'
 		'Douser_Address
 		'
-		Me.Douser_Address.Label = "Douser Address"
+		Me.Douser_Address.Label = "Douser Channel"
 		Me.Douser_Address.Name = "Douser_Address"
 		Me.Douser_Address.Text = Nothing
 		'

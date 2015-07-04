@@ -5,7 +5,7 @@
 	Private user As Integer
 	Private openVal As Integer
 	Private closedVal As Integer
-	Private douserAddress As String
+	Private douserChannel As String
 	Private douserSub As Integer
 	Private openTime As Integer
 	Private closeTime As Integer
@@ -34,8 +34,8 @@
 	Public Sub setClosedVal(value As Integer)
 		closedVal = value
 	End Sub
-	Public Sub setDouserAddress(address As String)
-		douserAddress = address
+	Public Sub setDouserChannel(channel As String)
+		douserChannel = channel
 	End Sub
 	Public Sub setDouserSub(submaster As Integer)
 		douserSub = submaster
@@ -56,17 +56,44 @@
 
 	End Sub
 
+
+
 	''' <summary>
 	''' Sends the input string as a Byte array in a UDP packet
 	''' </summary>
 	''' <param name="command">String to be sent in the UDP packet </param>
 	Private Sub sendCommand(command As String)
-		Dim udpClient As New System.Net.Sockets.UdpClient()
+		Dim udpClient As New System.Net.Sockets.UdpClient(ipAddress, port)
 
 		Dim dgram As Byte() = System.Text.Encoding.ASCII.GetBytes(command)
 
 		udpClient.Send(dgram, dgram.Length)
 
 
+	End Sub
+	Private Sub parseCmd(ByVal wn As PowerPoint.SlideShowWindow)
+		Dim activeSlide As Integer = wn.View.CurrentShowPosition
+		Dim sld As PowerPoint.Slide = wn.View.Slide
+		Dim notes As String = sld.NotesPage.Shapes.Placeholders(2).TextFrame.TextRange.Text
+
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("<(open|close>")
+		Dim inst As String = regEx.Match(notes).Groups(1).ToString
+		Dim cmd As String
+
+		If inst <> Nothing Then
+			If inst = "open" Then
+				cmd = "$Sub " & douserSub & openVal & " sneak " & openTime & "#"
+			ElseIf inst = "close" Then
+				cmd = "$Sub " & douserSub & closedVal & " sneak " & closeTime & "#"
+			Else
+				MsgBox("invalid test you dummy")
+				cmd = ""
+			End If
+			sendCommand(cmd)
+		End If
+	End Sub
+
+	Private Sub Application_SlideShowNextSlide(Wn As PowerPoint.SlideShowWindow) Handles Application.SlideShowNextSlide
+		parseCmd(Wn)
 	End Sub
 End Class

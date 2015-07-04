@@ -26,8 +26,8 @@ Public Class Ribbon1
 
 	Private Sub IP_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles IP_Address.TextChanged
 		' verifies that the input meets the valid form of an ip address and then sets the addIn ip address variable via its setter.
-		If System.Net.IPAddress.TryParse(IP_Address.ToString, Nothing) Then
-			Globals.ThisAddIn.setIp(IP_Address.ToString)
+		If System.Net.IPAddress.TryParse(IP_Address.Text, Nothing) Then
+			Globals.ThisAddIn.setIp(IP_Address.Text)
 		Else
 			MsgBox("Please enter a valid IP address")
 		End If
@@ -35,10 +35,11 @@ Public Class Ribbon1
 
 	Private Sub Port_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Port.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("^\d")
-		Dim strVal As String = Port.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Port.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
+			'for some reason this is failing?????????
 			If intVal < ThisAddIn.MAX_PORT_NO & intVal > 0 Then
 				Globals.ThisAddIn.setPort(intVal)
 			Else
@@ -51,7 +52,7 @@ Public Class Ribbon1
 
 	Private Sub Open_val_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Open_val.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Open_val.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Open_val.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
@@ -68,7 +69,7 @@ Public Class Ribbon1
 
 	Private Sub Closed_val_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Closed_val.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Closed_val.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Closed_val.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
@@ -86,7 +87,7 @@ Public Class Ribbon1
 
 	Private Sub Douser_Sub_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Sub.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Douser_Sub.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Douser_Sub.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
@@ -103,13 +104,13 @@ Public Class Ribbon1
 
 	Private Sub Douser_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Address.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Douser_Address.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Douser_Address.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
 			If intVal > 0 Then
-				Globals.ThisAddIn.setDouserAddress(intVal)
+				Globals.ThisAddIn.setDouserChannel(intVal)
 			Else
 				MsgBox("Please enter a value between 0 and 100")
 			End If
@@ -119,8 +120,8 @@ Public Class Ribbon1
 	End Sub
 
 	Private Sub OpenTime_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles OpenTime.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = OpenTime.ToString ' store the edit box value in a variable for easier changes
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("[0-9]{1,}")
+		Dim strVal As String = OpenTime.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
@@ -137,7 +138,7 @@ Public Class Ribbon1
 
 	Private Sub CloseTime_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles CloseTime.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = CloseTime.ToString ' store the edit box value in a variable for easier changes
+		Dim strVal As String = CloseTime.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
