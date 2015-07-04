@@ -39,14 +39,13 @@ Public Class Ribbon1
 		Dim intVal As Integer
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			'for some reason this is failing?????????
-			If intVal < ThisAddIn.MAX_PORT_NO & intVal > 0 Then
+			If intVal <= ThisAddIn.MAX_PORT_NO And intVal > 0 Then
 				Globals.ThisAddIn.setPort(intVal)
 			Else
-				MsgBox("Please enter a valid port#")
+				MsgBox("Please enter a valid port number")
 			End If
 		Else
-			MsgBox("Please enter a valid port#")
+			MsgBox("Please enter a valid port number")
 		End If
 	End Sub
 
@@ -55,15 +54,18 @@ Public Class Ribbon1
 		Dim strVal As String = Open_val.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
+		'define a string containing the acceptable range of values to be used with error messages
+		Dim strValidRange As String = ThisAddIn.MIN_POSITION_VAL & " and " & ThisAddIn.MAX_POSITION_VAL
+
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal < ThisAddIn.MAX_POSITION_VAL & intVal > ThisAddIn.MIN_POSITION_VAL Then
+			If intVal <= ThisAddIn.MAX_POSITION_VAL And intVal >= ThisAddIn.MIN_POSITION_VAL Then
 				Globals.ThisAddIn.setOpenVal(intVal)
 			Else
-				MsgBox("Please enter a value between 0 and 100")
+				MsgBox("Please enter a value between " & strValidRange)
 			End If
 		Else
-			MsgBox("Non Numeric values are not accepted. Please enter a value between 0 and 100")
+			MsgBox("Non Numeric values are not accepted. Please enter a value between " & strValidRange)
 		End If
 	End Sub
 
@@ -72,15 +74,18 @@ Public Class Ribbon1
 		Dim strVal As String = Closed_val.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
+		'define a string containing the acceptable range of values to be used with error messages
+		Dim strValidRange As String = ThisAddIn.MIN_POSITION_VAL & " and " & ThisAddIn.MAX_POSITION_VAL
+
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal < ThisAddIn.MAX_POSITION_VAL & intVal > ThisAddIn.MIN_POSITION_VAL Then
+			If intVal <= ThisAddIn.MAX_POSITION_VAL And intVal >= ThisAddIn.MIN_POSITION_VAL Then
 				Globals.ThisAddIn.setOpenVal(intVal)
 			Else
-				MsgBox("Please enter a value between 1 and 999")
+				MsgBox("Please enter a value between " & strValidRange)
 			End If
 		Else
-			MsgBox("Non Numeric values are not accepted. Please enter a value between 0 and 100")
+			MsgBox("Non Numeric values are not accepted. Please enter a value between " & strValidRange)
 		End If
 	End Sub
 
@@ -92,27 +97,27 @@ Public Class Ribbon1
 
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal < ThisAddIn.MAX_SUB & intVal > 1 Then
+			If intVal <= ThisAddIn.MAX_SUB And intVal >= 1 Then
 				Globals.ThisAddIn.setOpenVal(intVal)
 			Else
-				MsgBox("Please enter a valid Channel")
+				MsgBox("Please enter a valid submaster")
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted. Please enter a value between 1 and 999")
 		End If
 	End Sub
 
-	Private Sub Douser_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Address.TextChanged
+	Private Sub Douser_Channel_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Channel.TextChanged
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Douser_Address.Text ' store the edit box value in a variable for easier changes
+		Dim strVal As String = Douser_Channel.Text ' store the edit box value in a variable for easier changes
 		Dim intVal As Integer
 
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal > 0 Then
+			If intVal >= 1 Then
 				Globals.ThisAddIn.setDouserChannel(intVal)
 			Else
-				MsgBox("Please enter a value between 0 and 100")
+				MsgBox("Please enter a valid Channel number")
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted")
@@ -126,7 +131,7 @@ Public Class Ribbon1
 
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal > 0 Then
+			If intVal >= 0 Then
 				Globals.ThisAddIn.setOpenTime(intVal)
 			Else
 				MsgBox("please enter a valid time")
@@ -143,7 +148,7 @@ Public Class Ribbon1
 
 		If regEx.IsMatch(strVal) Then
 			intVal = CInt(strVal)
-			If intVal > 0 Then
+			If intVal >= 0 Then
 				Globals.ThisAddIn.setCloseTime(intVal)
 			Else
 				MsgBox("please enter a valid time")

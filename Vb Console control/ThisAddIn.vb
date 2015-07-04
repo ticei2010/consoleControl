@@ -1,4 +1,10 @@
 ﻿Public Class ThisAddIn
+
+
+	'https://msdn.microsoft.com/en-us/library/vstudio/bb608612(v=vs.100).aspx (storing values in file)
+	'https://msdn.microsoft.com/en-us/library/bb960904.aspx creating powerpoint add-on
+
+
 	'define the private variables
 	Private ipAddress As String
 	Private port As Integer
@@ -76,15 +82,25 @@
 		Dim sld As PowerPoint.Slide = wn.View.Slide
 		Dim notes As String = sld.NotesPage.Shapes.Placeholders(2).TextFrame.TextRange.Text
 
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("<(open|close>")
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("<(open|close)>")
 		Dim inst As String = regEx.Match(notes).Groups(1).ToString
 		Dim cmd As String
 
+		ipAddress = Globals.Ribbons.Ribbon1.IP_Address.Text
+		port = CInt(Globals.Ribbons.Ribbon1.Port.Text)
+		openVal = CInt(Globals.Ribbons.Ribbon1.Open_val.Text)
+		closedVal = CInt(Globals.Ribbons.Ribbon1.Closed_val.Text)
+		douserChannel = CInt(Globals.Ribbons.Ribbon1.Douser_Channel.Text)
+		douserSub = CInt(Globals.Ribbons.Ribbon1.Douser_Sub.Text)
+		openTime = CInt(Globals.Ribbons.Ribbon1.OpenTime.Text)
+		closeTime = CInt(Globals.Ribbons.Ribbon1.CloseTime.Text)
+
+
 		If inst <> Nothing Then
 			If inst = "open" Then
-				cmd = "$Sub " & douserSub & openVal & " sneak " & openTime & "#"
+				cmd = "$Sub " & douserSub & " @ " & openVal & " sneak " & openTime & "#"
 			ElseIf inst = "close" Then
-				cmd = "$Sub " & douserSub & closedVal & " sneak " & closeTime & "#"
+				cmd = "$Sub " & douserSub & " @ " & closedVal & " sneak " & closeTime & "#"
 			Else
 				MsgBox("invalid test you dummy")
 				cmd = ""

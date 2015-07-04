@@ -44,13 +44,14 @@
 		Me.DouserCtrlTab = Me.Factory.CreateRibbonTab
 		Me.ShowSettings = Me.Factory.CreateRibbonGroup
 		Me.DouserCtrlEnable = Me.Factory.CreateRibbonToggleButton
+		Me.mute = Me.Factory.CreateRibbonToggleButton
 		Me.Separator2 = Me.Factory.CreateRibbonSeparator
 		Me.Label1 = Me.Factory.CreateRibbonLabel
 		Me.OpenTime = Me.Factory.CreateRibbonEditBox
 		Me.CloseTime = Me.Factory.CreateRibbonEditBox
 		Me.Douser_Info = Me.Factory.CreateRibbonGroup
-		Me.AddressSubToggle = Me.Factory.CreateRibbonToggleButton
-		Me.Douser_Address = Me.Factory.CreateRibbonEditBox
+		Me.ChannelSubToggle = Me.Factory.CreateRibbonToggleButton
+		Me.Douser_Channel = Me.Factory.CreateRibbonEditBox
 		Me.Douser_Sub = Me.Factory.CreateRibbonEditBox
 		Me.Separator1 = Me.Factory.CreateRibbonSeparator
 		Me.Open_val = Me.Factory.CreateRibbonEditBox
@@ -59,7 +60,6 @@
 		Me.IP_Address = Me.Factory.CreateRibbonEditBox
 		Me.Port = Me.Factory.CreateRibbonEditBox
 		Me.User = Me.Factory.CreateRibbonEditBox
-		Me.mute = Me.Factory.CreateRibbonToggleButton
 		Me.DouserCtrlTab.SuspendLayout()
 		Me.ShowSettings.SuspendLayout()
 		Me.Douser_Info.SuspendLayout()
@@ -90,6 +90,12 @@
 		Me.DouserCtrlEnable.Label = "Enable Douser Control"
 		Me.DouserCtrlEnable.Name = "DouserCtrlEnable"
 		'
+		'mute
+		'
+		Me.mute.Label = "Mute Douser"
+		Me.mute.Name = "mute"
+		Me.mute.Tag = "ThisAddIn.mute"
+		'
 		'Separator2
 		'
 		Me.Separator2.Name = "Separator2"
@@ -104,19 +110,19 @@
 		Me.OpenTime.Label = "Open"
 		Me.OpenTime.Name = "OpenTime"
 		Me.OpenTime.ScreenTip = "seconds"
-		Me.OpenTime.Text = Nothing
+		Me.OpenTime.Text = "3"
 		'
 		'CloseTime
 		'
 		Me.CloseTime.Label = "Close"
 		Me.CloseTime.Name = "CloseTime"
 		Me.CloseTime.ScreenTip = "seconds"
-		Me.CloseTime.Text = Nothing
+		Me.CloseTime.Text = "5"
 		'
 		'Douser_Info
 		'
-		Me.Douser_Info.Items.Add(Me.AddressSubToggle)
-		Me.Douser_Info.Items.Add(Me.Douser_Address)
+		Me.Douser_Info.Items.Add(Me.ChannelSubToggle)
+		Me.Douser_Info.Items.Add(Me.Douser_Channel)
 		Me.Douser_Info.Items.Add(Me.Douser_Sub)
 		Me.Douser_Info.Items.Add(Me.Separator1)
 		Me.Douser_Info.Items.Add(Me.Open_val)
@@ -124,24 +130,24 @@
 		Me.Douser_Info.Label = "Douser Settings"
 		Me.Douser_Info.Name = "Douser_Info"
 		'
-		'AddressSubToggle
+		'ChannelSubToggle
 		'
-		Me.AddressSubToggle.Label = "Address / Sub"
-		Me.AddressSubToggle.Name = "AddressSubToggle"
-		Me.AddressSubToggle.SuperTip = "Do you want to use a DMX address or submaster to control the douser"
+		Me.ChannelSubToggle.Label = "Channel / Sub"
+		Me.ChannelSubToggle.Name = "ChannelSubToggle"
+		Me.ChannelSubToggle.SuperTip = "Do you want to use a DMX address or submaster to control the douser"
 		'
-		'Douser_Address
+		'Douser_Channel
 		'
-		Me.Douser_Address.Label = "Douser Channel"
-		Me.Douser_Address.Name = "Douser_Address"
-		Me.Douser_Address.Text = Nothing
+		Me.Douser_Channel.Label = "Douser Channel"
+		Me.Douser_Channel.Name = "Douser_Channel"
+		Me.Douser_Channel.Text = "150"
 		'
 		'Douser_Sub
 		'
 		Me.Douser_Sub.Label = "Douser Submaster"
 		Me.Douser_Sub.Name = "Douser_Sub"
 		Me.Douser_Sub.SizeString = "100"
-		Me.Douser_Sub.Text = Nothing
+		Me.Douser_Sub.Text = "100"
 		'
 		'Separator1
 		'
@@ -153,7 +159,7 @@
 		Me.Open_val.Name = "Open_val"
 		Me.Open_val.SizeString = "100"
 		Me.Open_val.SuperTip = "The intensity at which the douser is open."
-		Me.Open_val.Text = Nothing
+		Me.Open_val.Text = "0"
 		'
 		'Closed_val
 		'
@@ -161,7 +167,7 @@
 		Me.Closed_val.Name = "Closed_val"
 		Me.Closed_val.SizeString = "100"
 		Me.Closed_val.SuperTip = "The intensity at which the douser is closed."
-		Me.Closed_val.Text = Nothing
+		Me.Closed_val.Text = "85"
 		'
 		'Console_Settings
 		'
@@ -178,7 +184,7 @@
 		Me.IP_Address.Name = "IP_Address"
 		Me.IP_Address.SizeString = "000.000.000.000"
 		Me.IP_Address.SuperTip = "Your console's IP Address"
-		Me.IP_Address.Text = Nothing
+		Me.IP_Address.Text = "192.168.1.84"
 		'
 		'Port
 		'
@@ -186,7 +192,7 @@
 		Me.Port.Name = "Port"
 		Me.Port.SizeString = "5000"
 		Me.Port.SuperTip = "The recieve port set in your console's show control settings."
-		Me.Port.Text = Nothing
+		Me.Port.Text = "5000"
 		'
 		'User
 		'
@@ -195,12 +201,6 @@
 		Me.User.ScreenTip = "0-9"
 		Me.User.SizeString = "0"
 		Me.User.Text = "1"
-		'
-		'mute
-		'
-		Me.mute.Label = "Mute Douser"
-		Me.mute.Name = "mute"
-		Me.mute.Tag = "ThisAddIn.mute"
 		'
 		'Ribbon1
 		'
@@ -223,10 +223,10 @@
 	Friend WithEvents IP_Address As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Port As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Douser_Info As Microsoft.Office.Tools.Ribbon.RibbonGroup
-	Friend WithEvents Douser_Address As Microsoft.Office.Tools.Ribbon.RibbonEditBox
+	Friend WithEvents Douser_Channel As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Open_val As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Closed_val As Microsoft.Office.Tools.Ribbon.RibbonEditBox
-	Friend WithEvents AddressSubToggle As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
+	Friend WithEvents ChannelSubToggle As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
 	Friend WithEvents User As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Douser_Sub As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Separator1 As Microsoft.Office.Tools.Ribbon.RibbonSeparator
