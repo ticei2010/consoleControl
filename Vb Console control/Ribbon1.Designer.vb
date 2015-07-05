@@ -138,7 +138,7 @@
 		'
 		'Douser_Channel
 		'
-		Me.Douser_Channel.Label = "Douser Channel"
+		Me.Douser_Channel.Label = "Douser Channel   "
 		Me.Douser_Channel.Name = "Douser_Channel"
 		Me.Douser_Channel.Text = "150"
 		'
@@ -155,7 +155,7 @@
 		'
 		'Open_val
 		'
-		Me.Open_val.Label = "Open Value"
+		Me.Open_val.Label = "Open Value  "
 		Me.Open_val.Name = "Open_val"
 		Me.Open_val.SizeString = "100"
 		Me.Open_val.SuperTip = "The intensity at which the douser is open."
@@ -188,7 +188,7 @@
 		'
 		'Port
 		'
-		Me.Port.Label = "Port"
+		Me.Port.Label = "Port          "
 		Me.Port.Name = "Port"
 		Me.Port.SizeString = "5000"
 		Me.Port.SuperTip = "The recieve port set in your console's show control settings."
@@ -196,7 +196,7 @@
 		'
 		'User
 		'
-		Me.User.Label = "User #"
+		Me.User.Label = "User #      "
 		Me.User.Name = "User"
 		Me.User.ScreenTip = "0-9"
 		Me.User.SizeString = "0"

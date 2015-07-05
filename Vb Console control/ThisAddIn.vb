@@ -26,7 +26,7 @@
 
 	'setter functions
 	Public Sub setIp(consoleIpAddress As String)
-		ipAddress = consoleIpAddress
+		Dim xml As Office.CustomXMLParts
 	End Sub
 	Public Sub setPort(consolePort As Integer)
 		port = consolePort
@@ -109,6 +109,54 @@
 		End If
 	End Sub
 
+	Private Sub Application_AfterNewPresentation(Pres As PowerPoint.Presentation) Handles Application.AfterNewPresentation
+		addCustomXMLToPPT(Pres)
+	End Sub
+
+	Private Sub Application_NewPresentation(Pres As PowerPoint.Presentation) Handles Application.NewPresentation
+
+	End Sub
+
+	''' <summary>
+	''' insert the ribbon values as custom xml in the project
+	''' </summary>
+	''' <param name="presentation"></param>
+	''' <remarks></remarks>
+	Private Sub addCustomXMLToPPT(ByVal presentation As PowerPoint.Presentation)
+		With Globals.Ribbons.Ribbon1
+			Dim xmlString As String =
+			   "<douser_controls>" & _
+				   "<console>" & _
+					   "<ip >" & .IP_Address.Text & "</ip>" & _
+					   "<port>" & .Port.Text & "</port>" & _
+					   "<user>" & .User.Text & "</user>" & _
+				   "</console>" & _
+					"<douser>" & _
+						"<channel>" & .Douser_Channel.Text & "</channel>" & _
+						"<submaster>" & .Douser_Sub.Text & "</submaster>" & _
+						"<open_val>" & .Open_val.Text & "</open_val>" & _
+						"<closed_val>" & .Closed_val.Text & "</closed_val>" & _
+						"<channel-sub>sub</channel-sub>" & _
+					"</douser>" & _
+					"<show>" & _
+						"<open_time>" & .OpenTime.Text & "</open_time>" & _
+						"<close_time>" & .CloseTime.Text & "</close_time>" & _
+					"</show>" & _
+			   "</douser_controls>"
+			Dim douserControls As Office.CustomXMLPart = presentation.CustomXMLParts.Add(xmlString)
+
+			'store the xml GUID in a custom property for later retrieval
+
+			presentation.CustomDocumentProperties.Add( _
+				"douser_controls", False, _
+				Office.MsoDocProperties.msoPropertyTypeString, douserControls.Id)
+
+			'douserControls.Id
+			
+
+		End With
+
+	End Sub
 	Private Sub Application_SlideShowNextSlide(Wn As PowerPoint.SlideShowWindow) Handles Application.SlideShowNextSlide
 		parseCmd(Wn)
 	End Sub

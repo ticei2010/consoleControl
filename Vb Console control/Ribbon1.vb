@@ -1,10 +1,10 @@
 ﻿Imports Microsoft.Office.Tools.Ribbon
 
 Public Class Ribbon1
+	Public xmlPart As Office.CustomXMLPart
+	Private Sub Ribbon1_Load(ByVal sender As System.Object, ByVal e As RibbonUIEventArgs) Handles MyBase.Load
 
-    Private Sub Ribbon1_Load(ByVal sender As System.Object, ByVal e As RibbonUIEventArgs) Handles MyBase.Load
-
-    End Sub
+	End Sub
 
 	Private Sub DouserEnable_Click(sender As Object, e As RibbonControlEventArgs) Handles DouserCtrlEnable.Click
 		'if Douser Enable is not true disable all controls
@@ -25,11 +25,18 @@ Public Class Ribbon1
 	End Sub
 
 	Private Sub IP_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles IP_Address.TextChanged
-		' verifies that the input meets the valid form of an ip address and then sets the addIn ip address variable via its setter.
+		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
+
+		Dim xml As Office.CustomXMLPart = pres.CustomXMLParts.SelectByID( _
+			pres.CustomDocumentProperties.Item("douser_controls").Value _
+			)
+		Dim item As Office.CustomXMLNode = xml.SelectSingleNode("/douser_controls/console/ip")
+
 		If System.Net.IPAddress.TryParse(IP_Address.Text, Nothing) Then
-			Globals.ThisAddIn.setIp(IP_Address.Text)
+			item.Text = IP_Address.Text
 		Else
 			MsgBox("Please enter a valid IP address")
+			IP_Address.Text = item.Text
 		End If
 	End Sub
 
@@ -157,6 +164,8 @@ Public Class Ribbon1
 			MsgBox("Non Numeric values are not accepted.")
 		End If
 	End Sub
+
+
 End Class
 
 
