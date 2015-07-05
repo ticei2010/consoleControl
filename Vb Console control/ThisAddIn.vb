@@ -7,14 +7,14 @@
 
 	'define the private variables
 	Private ipAddress As String
-	Private port As Integer
-	Private user As Integer
+	Private port As String
+	Private user As String
 	Private openVal As Integer
-	Private closedVal As Integer
+	Private closedVal As String
 	Private douserChannel As String
-	Private douserSub As Integer
-	Private openTime As Integer
-	Private closeTime As Integer
+	Private douserSub As String
+	Private openTime As String
+	Private closeTime As String
 
 
 	Public Const MAX_SUB As Integer = 999
@@ -25,12 +25,8 @@
 	Public mute As Boolean
 
 	'setter functions
-	Public Sub setIp(consoleIpAddress As String)
-		Dim xml As Office.CustomXMLParts
-	End Sub
-	Public Sub setPort(consolePort As Integer)
-		port = consolePort
-	End Sub
+
+
 	Public Sub setUser(userNo As Integer)
 		user = userNo
 	End Sub
@@ -46,9 +42,7 @@
 	Public Sub setDouserSub(submaster As Integer)
 		douserSub = submaster
 	End Sub
-	Public Sub setOpenTime(time As Integer)
-		openTime = time
-	End Sub
+
 	Public Sub setCloseTime(time As Integer)
 		closeTime = time
 	End Sub
@@ -69,7 +63,7 @@
 	''' </summary>
 	''' <param name="command">String to be sent in the UDP packet </param>
 	Private Sub sendCommand(command As String)
-		Dim udpClient As New System.Net.Sockets.UdpClient(ipAddress, port)
+		Dim udpClient As New System.Net.Sockets.UdpClient(ipAddress, CInt(port))
 
 		Dim dgram As Byte() = System.Text.Encoding.ASCII.GetBytes(command)
 
@@ -87,13 +81,13 @@
 		Dim cmd As String
 
 		ipAddress = Globals.Ribbons.Ribbon1.IP_Address.Text
-		port = CInt(Globals.Ribbons.Ribbon1.Port.Text)
-		openVal = CInt(Globals.Ribbons.Ribbon1.Open_val.Text)
-		closedVal = CInt(Globals.Ribbons.Ribbon1.Closed_val.Text)
-		douserChannel = CInt(Globals.Ribbons.Ribbon1.Douser_Channel.Text)
-		douserSub = CInt(Globals.Ribbons.Ribbon1.Douser_Sub.Text)
-		openTime = CInt(Globals.Ribbons.Ribbon1.OpenTime.Text)
-		closeTime = CInt(Globals.Ribbons.Ribbon1.CloseTime.Text)
+		port = Globals.Ribbons.Ribbon1.Port.Text
+		openVal = Globals.Ribbons.Ribbon1.Open_val.Text
+		closedVal = Globals.Ribbons.Ribbon1.Closed_val.Text
+		douserChannel = Globals.Ribbons.Ribbon1.Douser_Channel.Text
+		douserSub = Globals.Ribbons.Ribbon1.Douser_Sub.Text
+		openTime = Globals.Ribbons.Ribbon1.OpenTime.Text
+		closeTime = Globals.Ribbons.Ribbon1.CloseTime.Text
 
 
 		If inst <> Nothing Then

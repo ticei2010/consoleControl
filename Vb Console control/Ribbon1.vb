@@ -24,144 +24,178 @@ Public Class Ribbon1
 		Next
 	End Sub
 
-	Private Sub IP_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles IP_Address.TextChanged
+	''' <summary>
+	''' Returns the xml node specified by the extension
+	''' </summary>
+	''' <param name="extension">A string defining the path form "/douser_controls/" to the desired node </param>
+	''' <returns>Office.CustomXMLNode</returns>
+	''' <remarks></remarks>
+	Private Function getNode(extension As String) As Office.CustomXMLNode
+		'retrieve the active presentation object
 		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
 
+		'load the douser control xml and select the port node
 		Dim xml As Office.CustomXMLPart = pres.CustomXMLParts.SelectByID( _
-			pres.CustomDocumentProperties.Item("douser_controls").Value _
-			)
-		Dim item As Office.CustomXMLNode = xml.SelectSingleNode("/douser_controls/console/ip")
+			pres.CustomDocumentProperties.Item("douser_controls").Value)
+		Return xml.SelectSingleNode("/douser_controls/" & extension)
+	End Function
 
+	Private Sub IP_Address_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles IP_Address.TextChanged
+		Dim nodePath As String = "console/ip"
+
+		'if a new valid ip address is provided update the xml otherwise
+		'notify the user and reset to the last good value
 		If System.Net.IPAddress.TryParse(IP_Address.Text, Nothing) Then
-			item.Text = IP_Address.Text
+			getNode(nodePath).Text = IP_Address.Text
 		Else
 			MsgBox("Please enter a valid IP address")
-			IP_Address.Text = item.Text
+			IP_Address.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub Port_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Port.TextChanged
+		Dim nodePath As String = "console/port"
+
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("^\d")
-		Dim strVal As String = Port.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal <= ThisAddIn.MAX_PORT_NO And intVal > 0 Then
-				Globals.ThisAddIn.setPort(intVal)
+		'if a new valid port is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(Port.Text) Then
+			If CInt(Port.Text) <= ThisAddIn.MAX_PORT_NO And CInt(Port.Text) > 0 Then
+				getNode(nodePath).Text = Port.Text
 			Else
 				MsgBox("Please enter a valid port number")
+				Port.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Please enter a valid port number")
+			Port.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub Open_val_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Open_val.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Open_val.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "douser/open_val"
 
 		'define a string containing the acceptable range of values to be used with error messages
 		Dim strValidRange As String = ThisAddIn.MIN_POSITION_VAL & " and " & ThisAddIn.MAX_POSITION_VAL
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal <= ThisAddIn.MAX_POSITION_VAL And intVal >= ThisAddIn.MIN_POSITION_VAL Then
-				Globals.ThisAddIn.setOpenVal(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid open val is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(Open_val.Text) Then
+			If CInt(Open_val.Text) <= ThisAddIn.MAX_POSITION_VAL And CInt(Open_val.Text) >= ThisAddIn.MIN_POSITION_VAL Then
+				getNode(nodePath).Text = Open_val.Text
 			Else
 				MsgBox("Please enter a value between " & strValidRange)
+				Open_val.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted. Please enter a value between " & strValidRange)
+			Open_val.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub Closed_val_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Closed_val.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Closed_val.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "douser/closed_val"
 
 		'define a string containing the acceptable range of values to be used with error messages
 		Dim strValidRange As String = ThisAddIn.MIN_POSITION_VAL & " and " & ThisAddIn.MAX_POSITION_VAL
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal <= ThisAddIn.MAX_POSITION_VAL And intVal >= ThisAddIn.MIN_POSITION_VAL Then
-				Globals.ThisAddIn.setOpenVal(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid closed val is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(Closed_val.Text) Then
+			If CInt(Closed_val.Text) <= ThisAddIn.MAX_POSITION_VAL And CInt(Closed_val.Text) >= ThisAddIn.MIN_POSITION_VAL Then
+				getNode(nodePath).Text = Closed_val.Text
 			Else
 				MsgBox("Please enter a value between " & strValidRange)
+				Closed_val.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted. Please enter a value between " & strValidRange)
+			Closed_val.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 
 	Private Sub Douser_Sub_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Sub.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Douser_Sub.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "douser/submaster"
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal <= ThisAddIn.MAX_SUB And intVal >= 1 Then
-				Globals.ThisAddIn.setOpenVal(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid submaster is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(Douser_Sub.Text) Then
+			If CInt(Douser_Sub.Text) <= ThisAddIn.MAX_SUB And CInt(Douser_Sub.Text) >= 1 Then
+				getNode(nodePath).Text = Douser_Sub.Text
 			Else
 				MsgBox("Please enter a valid submaster")
+				Douser_Sub.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted. Please enter a value between 1 and 999")
+			Douser_Sub.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub Douser_Channel_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles Douser_Channel.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = Douser_Channel.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "douser/channel"
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal >= 1 Then
-				Globals.ThisAddIn.setDouserChannel(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid channel is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(Douser_Channel.Text) Then
+			If CInt(Douser_Channel.Text) >= 1 Then
+				getNode(nodePath).Text = Douser_Channel.Text
 			Else
 				MsgBox("Please enter a valid Channel number")
+				Douser_Channel.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted")
+			Douser_Channel.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub OpenTime_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles OpenTime.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("[0-9]{1,}")
-		Dim strVal As String = OpenTime.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "show/open_time"
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal >= 0 Then
-				Globals.ThisAddIn.setOpenTime(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("[0-9]{1,}")
+
+		'if a new valid open time is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(OpenTime.Text) Then
+			If CInt(OpenTime.Text) >= 0 Then
+				getNode(nodePath).Text = OpenTime.Text
 			Else
 				MsgBox("please enter a valid time")
+				OpenTime.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted.")
+			OpenTime.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
 	Private Sub CloseTime_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles CloseTime.TextChanged
-		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
-		Dim strVal As String = CloseTime.Text ' store the edit box value in a variable for easier changes
-		Dim intVal As Integer
+		Dim nodePath As String = "show/close_time"
 
-		If regEx.IsMatch(strVal) Then
-			intVal = CInt(strVal)
-			If intVal >= 0 Then
-				Globals.ThisAddIn.setCloseTime(intVal)
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid close time is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(CloseTime.Text) Then
+			If CInt(CloseTime.Text) >= 0 Then
+				getNode(nodePath).Text = CloseTime.Text
 			Else
 				MsgBox("please enter a valid time")
+				CloseTime.Text = getNode(nodePath).Text
 			End If
 		Else
 			MsgBox("Non Numeric values are not accepted.")
+			CloseTime.Text = getNode(nodePath).Text
 		End If
 	End Sub
 
