@@ -8,13 +8,6 @@
 	'define the private variables
 	Private ipAddress As String
 	Private port As String
-	Private user As String
-	Private openVal As Integer
-	Private closedVal As String
-	Private douserChannel As String
-	Private douserSub As String
-	Private openTime As String
-	Private closeTime As String
 
 
 	Public Const MAX_SUB As Integer = 999
@@ -23,30 +16,6 @@
 	Public Const MAX_PORT_NO As Integer = UInt16.MaxValue
 
 	Public mute As Boolean
-
-	'setter functions
-
-
-	Public Sub setUser(userNo As Integer)
-		user = userNo
-	End Sub
-	Public Sub setOpenVal(value As Integer)
-		openVal = value
-	End Sub
-	Public Sub setClosedVal(value As Integer)
-		closedVal = value
-	End Sub
-	Public Sub setDouserChannel(channel As String)
-		douserChannel = channel
-	End Sub
-	Public Sub setDouserSub(submaster As Integer)
-		douserSub = submaster
-	End Sub
-
-	Public Sub setCloseTime(time As Integer)
-		closeTime = time
-	End Sub
-
 
 	Private Sub ThisAddIn_Startup() Handles Me.Startup
 
@@ -79,35 +48,41 @@
 		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("<(open|close)>")
 		Dim inst As String = regEx.Match(notes).Groups(1).ToString
 		Dim cmd As String
+		With Globals.Ribbons.Ribbon1
+			ipAddress = .IP_Address.Text
+			port = .Port.Text
+			Dim user As String = .User.Text
+			Dim openVal As Integer = .Open_val.Text
+			Dim closedVal As String = .Closed_val.Text
+			Dim chan_sub As String
+			Dim openTime As String = .OpenTime.Text
+			Dim closeTime As String = .CloseTime.Text
 
-		ipAddress = Globals.Ribbons.Ribbon1.IP_Address.Text
-		port = Globals.Ribbons.Ribbon1.Port.Text
-		openVal = Globals.Ribbons.Ribbon1.Open_val.Text
-		closedVal = Globals.Ribbons.Ribbon1.Closed_val.Text
-		douserChannel = Globals.Ribbons.Ribbon1.Douser_Channel.Text
-		douserSub = Globals.Ribbons.Ribbon1.Douser_Sub.Text
-		openTime = Globals.Ribbons.Ribbon1.OpenTime.Text
-		closeTime = Globals.Ribbons.Ribbon1.CloseTime.Text
-
-
-		If inst <> Nothing Then
-			If inst = "open" Then
-				cmd = "$Sub " & douserSub & " @ " & openVal & " sneak " & openTime & "#"
-			ElseIf inst = "close" Then
-				cmd = "$Sub " & douserSub & " @ " & closedVal & " sneak " & closeTime & "#"
+			If .Channel.Checked Then
+				chan_sub = .Douser_Channel.Text
 			Else
-				cmd = ""
+				chan_sub = .Douser_Sub.Text
 			End If
-			sendCommand(cmd)
+
+			If inst <> Nothing Then
+				If inst = "open" Then
+					cmd = "$<u" & user & "> " & .getNode("douser/channel-sub").Text & " " & chan_sub & " @ " & openVal & " sneak " & openTime & "#"
+				ElseIf inst = "close" Then
+					cmd = "$<u" & user & "> " & .getNode("douser/channel-sub").Text & " " & chan_sub & " @ " & closedVal & " sneak " & closeTime & "#"
+				Else
+					cmd = ""
+				End If
+				sendCommand(cmd)
+			End If
+		End With
+	End Sub
+
+	Private Sub Application_AfterPresentationOpen(Pres As PowerPoint.Presentation) Handles Application.AfterPresentationOpen
+		If Globals.Ribbons.Ribbon1.storedControls() Then
+			Globals.Ribbons.Ribbon1.loadSettings()
 		End If
 	End Sub
 
-	Private Sub Application_AfterNewPresentation(Pres As PowerPoint.Presentation) Handles Application.AfterNewPresentation
-	End Sub
-
-	Private Sub Application_NewPresentation(Pres As PowerPoint.Presentation) Handles Application.NewPresentation
-
-	End Sub
 
 	
 

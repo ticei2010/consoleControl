@@ -6,15 +6,26 @@ Public Class Ribbon1
 
 	End Sub
 
-	Private Sub DouserEnable_Click(sender As Object, e As RibbonControlEventArgs) Handles DouserCtrlEnable.Click
+	Public Function storedControls() As Boolean
 		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
-
+		'determine if the presentation has the douser controls property
 		Try
 			Dim test As String = pres.CustomDocumentProperties.Item("douser_controls").value
 		Catch ex As Exception
-			addCustomXMLToPPT(pres)
+			Return False
 		End Try
+		Return True
+	End Function
 
+	Private Sub DouserEnable_Click(sender As Object, e As RibbonControlEventArgs) Handles DouserCtrlEnable.Click
+		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
+
+		If Not storedControls() Then
+			addCustomXMLToPPT(pres)
+		End If
+
+
+		getNode("douser_control").Text = DouserCtrlEnable.Checked
 
 		Dim enabled As Boolean = DouserCtrlEnable.Checked
 		mute.Enabled = enabled
@@ -37,7 +48,7 @@ Public Class Ribbon1
 	''' <param name="extension">A string defining the path form "/douser_controls/" to the desired node </param>
 	''' <returns>Office.CustomXMLNode</returns>
 	''' <remarks></remarks>
-	Private Function getNode(extension As String) As Office.CustomXMLNode
+	Public Function getNode(extension As String) As Office.CustomXMLNode
 		'retrieve the active presentation object
 		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
 
@@ -208,18 +219,26 @@ Public Class Ribbon1
 
 
 	Private Sub Channel_Click(sender As Object, e As RibbonControlEventArgs) Handles Channel.Click
+		Dim nodePath As String = "douser/channel-sub"
+
 		If Channel.Checked Then
 			submaster.Checked = False
+			getNode(nodePath).Text = "Chan"
 		Else
 			submaster.Checked = True
+			getNode(nodePath).Text = "sub"
 		End If
 	End Sub
 
 	Private Sub submaster_Click(sender As Object, e As RibbonControlEventArgs) Handles submaster.Click
+		Dim nodePath As String = "douser/channel-sub"
+
 		If submaster.Checked Then
 			Channel.Checked = False
+			getNode(nodePath).Text = "sub"
 		Else
 			Channel.Checked = True
+			getNode(nodePath).Text = "Chan"
 		End If
 	End Sub
 	''' <summary>
@@ -231,12 +250,14 @@ Public Class Ribbon1
 		With Globals.Ribbons.Ribbon1
 			Dim xmlString As String =
 			   "<douser_controls>" & _
+				"<douser_control></douser_control>" & _
 				   "<console>" & _
 					   "<ip >" & .IP_Address.Text & "</ip>" & _
 					   "<port>" & .Port.Text & "</port>" & _
 					   "<user>" & .User.Text & "</user>" & _
 				   "</console>" & _
 					"<douser>" & _
+						"<channel-sub>chan</channel-sub>" & _
 						"<channel>" & .Douser_Channel.Text & "</channel>" & _
 						"<submaster>" & .Douser_Sub.Text & "</submaster>" & _
 						"<open_val>" & .Open_val.Text & "</open_val>" & _
@@ -258,5 +279,61 @@ Public Class Ribbon1
 		End With
 
 	End Sub
+	Public Sub loadSettings()
+
+		IP_Address.Text = getNode("console/ip").Text
+		Port.Text = getNode("console/port").Text
+		User.Text = getNode("console/user").Text
+		Douser_Channel.Text = getNode("douser/channel").Text
+		Douser_Sub.Text = getNode("douser/submaster").Text
+		Open_val.Text = getNode("douser/open_val").Text
+		Closed_val.Text = getNode("douser/closed_val").Text
+		OpenTime.Text = getNode("show/open_time").Text
+		CloseTime.Text = getNode("show/close_time").Text
+		If getNode("douser/channel-sub").Text = "channel" Then
+			Channel.Checked = True
+			submaster.Checked = False
+		Else
+			Channel.Checked = False
+			submaster.Checked = True
+		End If
+
+		If getNode("douser_control").Text Then
+			DouserCtrlEnable.Checked = True
+			mute.Enabled = True
+			OpenTime.Enabled = True
+			CloseTime.Enabled = True
+			submaster.Enabled = True
+			Channel.Enabled = True
+			Douser_Channel.Enabled = True
+			Douser_Sub.Enabled = True
+			Open_val.Enabled = True
+			Closed_val.Enabled = True
+			IP_Address.Enabled = True
+			Port.Enabled = True
+			User.Enabled = True
+		End If
+	End Sub
+
+	Private Sub User_TextChanged(sender As Object, e As RibbonControlEventArgs) Handles User.TextChanged
+		Dim nodePath As String = "console/user"
+
+		Dim regEx As RegularExpressions.Regex = New RegularExpressions.Regex("\d")
+
+		'if a new valid close time is provided update the xml otherwise
+		'notify the user and reset to the last good value
+		If regEx.IsMatch(User.Text) Then
+			If CInt(User.Text) >= 0 Then
+				getNode(nodePath).Text = User.Text
+			Else
+				MsgBox("please enter a valid user number")
+				User.Text = getNode(nodePath).Text
+			End If
+		Else
+			MsgBox("Non Numeric values are not accepted.")
+			User.Text = getNode(nodePath).Text
+		End If
+	End Sub
 End Class
+
 
