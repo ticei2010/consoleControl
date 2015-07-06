@@ -245,6 +245,7 @@
     <None Include="Vb Console control_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NO-pic.jpg" />
     <Content Include="XMLFile1.xml" />
   </ItemGroup>
   <PropertyGroup>

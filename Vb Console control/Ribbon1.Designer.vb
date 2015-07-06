@@ -50,7 +50,6 @@
 		Me.OpenTime = Me.Factory.CreateRibbonEditBox
 		Me.CloseTime = Me.Factory.CreateRibbonEditBox
 		Me.Douser_Info = Me.Factory.CreateRibbonGroup
-		Me.ChannelSubToggle = Me.Factory.CreateRibbonToggleButton
 		Me.Douser_Channel = Me.Factory.CreateRibbonEditBox
 		Me.Douser_Sub = Me.Factory.CreateRibbonEditBox
 		Me.Separator1 = Me.Factory.CreateRibbonSeparator
@@ -60,10 +59,14 @@
 		Me.IP_Address = Me.Factory.CreateRibbonEditBox
 		Me.Port = Me.Factory.CreateRibbonEditBox
 		Me.User = Me.Factory.CreateRibbonEditBox
+		Me.ButtonGroup1 = Me.Factory.CreateRibbonButtonGroup
+		Me.Channel = Me.Factory.CreateRibbonToggleButton
+		Me.submaster = Me.Factory.CreateRibbonToggleButton
 		Me.DouserCtrlTab.SuspendLayout()
 		Me.ShowSettings.SuspendLayout()
 		Me.Douser_Info.SuspendLayout()
 		Me.Console_Settings.SuspendLayout()
+		Me.ButtonGroup1.SuspendLayout()
 		'
 		'DouserCtrlTab
 		'
@@ -71,7 +74,7 @@
 		Me.DouserCtrlTab.Groups.Add(Me.ShowSettings)
 		Me.DouserCtrlTab.Groups.Add(Me.Douser_Info)
 		Me.DouserCtrlTab.Groups.Add(Me.Console_Settings)
-		Me.DouserCtrlTab.Label = "Douser Control Settings"
+		Me.DouserCtrlTab.Label = "Douser"
 		Me.DouserCtrlTab.Name = "DouserCtrlTab"
 		'
 		'ShowSettings
@@ -92,9 +95,12 @@
 		'
 		'mute
 		'
+		Me.mute.Enabled = False
+		Me.mute.Image = Global.Vb_Console_control.My.Resources.Resources.NO_pic
 		Me.mute.Label = "Mute Douser"
 		Me.mute.Name = "mute"
-		Me.mute.Tag = "ThisAddIn.mute"
+		Me.mute.ShowImage = True
+		Me.mute.Tag = ""
 		'
 		'Separator2
 		'
@@ -107,6 +113,7 @@
 		'
 		'OpenTime
 		'
+		Me.OpenTime.Enabled = False
 		Me.OpenTime.Label = "Open"
 		Me.OpenTime.Name = "OpenTime"
 		Me.OpenTime.ScreenTip = "seconds"
@@ -114,6 +121,7 @@
 		'
 		'CloseTime
 		'
+		Me.CloseTime.Enabled = False
 		Me.CloseTime.Label = "Close"
 		Me.CloseTime.Name = "CloseTime"
 		Me.CloseTime.ScreenTip = "seconds"
@@ -121,7 +129,7 @@
 		'
 		'Douser_Info
 		'
-		Me.Douser_Info.Items.Add(Me.ChannelSubToggle)
+		Me.Douser_Info.Items.Add(Me.ButtonGroup1)
 		Me.Douser_Info.Items.Add(Me.Douser_Channel)
 		Me.Douser_Info.Items.Add(Me.Douser_Sub)
 		Me.Douser_Info.Items.Add(Me.Separator1)
@@ -130,20 +138,16 @@
 		Me.Douser_Info.Label = "Douser Settings"
 		Me.Douser_Info.Name = "Douser_Info"
 		'
-		'ChannelSubToggle
-		'
-		Me.ChannelSubToggle.Label = "Channel / Sub"
-		Me.ChannelSubToggle.Name = "ChannelSubToggle"
-		Me.ChannelSubToggle.SuperTip = "Do you want to use a DMX address or submaster to control the douser"
-		'
 		'Douser_Channel
 		'
+		Me.Douser_Channel.Enabled = False
 		Me.Douser_Channel.Label = "Douser Channel   "
 		Me.Douser_Channel.Name = "Douser_Channel"
 		Me.Douser_Channel.Text = "150"
 		'
 		'Douser_Sub
 		'
+		Me.Douser_Sub.Enabled = False
 		Me.Douser_Sub.Label = "Douser Submaster"
 		Me.Douser_Sub.Name = "Douser_Sub"
 		Me.Douser_Sub.SizeString = "100"
@@ -155,6 +159,7 @@
 		'
 		'Open_val
 		'
+		Me.Open_val.Enabled = False
 		Me.Open_val.Label = "Open Value  "
 		Me.Open_val.Name = "Open_val"
 		Me.Open_val.SizeString = "100"
@@ -163,6 +168,7 @@
 		'
 		'Closed_val
 		'
+		Me.Closed_val.Enabled = False
 		Me.Closed_val.Label = "Closed Value"
 		Me.Closed_val.Name = "Closed_val"
 		Me.Closed_val.SizeString = "100"
@@ -179,6 +185,7 @@
 		'
 		'IP_Address
 		'
+		Me.IP_Address.Enabled = False
 		Me.IP_Address.Label = "Ip Address"
 		Me.IP_Address.MaxLength = 15
 		Me.IP_Address.Name = "IP_Address"
@@ -188,6 +195,7 @@
 		'
 		'Port
 		'
+		Me.Port.Enabled = False
 		Me.Port.Label = "Port          "
 		Me.Port.Name = "Port"
 		Me.Port.SizeString = "5000"
@@ -196,11 +204,31 @@
 		'
 		'User
 		'
+		Me.User.Enabled = False
 		Me.User.Label = "User #      "
 		Me.User.Name = "User"
 		Me.User.ScreenTip = "0-9"
 		Me.User.SizeString = "0"
 		Me.User.Text = "1"
+		'
+		'ButtonGroup1
+		'
+		Me.ButtonGroup1.Items.Add(Me.Channel)
+		Me.ButtonGroup1.Items.Add(Me.submaster)
+		Me.ButtonGroup1.Name = "ButtonGroup1"
+		'
+		'Channel
+		'
+		Me.Channel.Checked = True
+		Me.Channel.Enabled = False
+		Me.Channel.Label = " Channel "
+		Me.Channel.Name = "Channel"
+		'
+		'submaster
+		'
+		Me.submaster.Enabled = False
+		Me.submaster.Label = " Sub "
+		Me.submaster.Name = "submaster"
 		'
 		'Ribbon1
 		'
@@ -215,6 +243,8 @@
 		Me.Douser_Info.PerformLayout()
 		Me.Console_Settings.ResumeLayout(False)
 		Me.Console_Settings.PerformLayout()
+		Me.ButtonGroup1.ResumeLayout(False)
+		Me.ButtonGroup1.PerformLayout()
 
 	End Sub
 
@@ -226,7 +256,6 @@
 	Friend WithEvents Douser_Channel As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Open_val As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Closed_val As Microsoft.Office.Tools.Ribbon.RibbonEditBox
-	Friend WithEvents ChannelSubToggle As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
 	Friend WithEvents User As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Douser_Sub As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents Separator1 As Microsoft.Office.Tools.Ribbon.RibbonSeparator
@@ -237,6 +266,9 @@
 	Friend WithEvents OpenTime As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents CloseTime As Microsoft.Office.Tools.Ribbon.RibbonEditBox
 	Friend WithEvents mute As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
+	Friend WithEvents ButtonGroup1 As Microsoft.Office.Tools.Ribbon.RibbonButtonGroup
+	Friend WithEvents Channel As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
+	Friend WithEvents submaster As Microsoft.Office.Tools.Ribbon.RibbonToggleButton
 End Class
 
 Partial Class ThisRibbonCollection

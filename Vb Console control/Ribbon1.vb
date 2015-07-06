@@ -7,21 +7,28 @@ Public Class Ribbon1
 	End Sub
 
 	Private Sub DouserEnable_Click(sender As Object, e As RibbonControlEventArgs) Handles DouserCtrlEnable.Click
-		'if Douser Enable is not true disable all controls
-		Dim status As Boolean
-		Dim ctrl
+		Dim pres As PowerPoint.Presentation = Globals.ThisAddIn.Application.ActivePresentation
 
-		status = DouserCtrlEnable.Checked
-		OpenTime.Enabled = False
-		CloseTime.Enabled = False
+		Try
+			Dim test As String = pres.CustomDocumentProperties.Item("douser_controls").value
+		Catch ex As Exception
+			addCustomXMLToPPT(pres)
+		End Try
 
-		For Each ctrl In Douser_Info.Items
-			ctrl.Enabled = status
-		Next
 
-		For Each ctrl In Console_Settings.Items
-			ctrl.Enable = status
-		Next
+		Dim enabled As Boolean = DouserCtrlEnable.Checked
+		mute.Enabled = enabled
+		OpenTime.Enabled = enabled
+		CloseTime.Enabled = enabled
+		submaster.Enabled = enabled
+		Channel.Enabled = enabled
+		Douser_Channel.Enabled = enabled
+		Douser_Sub.Enabled = enabled
+		Open_val.Enabled = enabled
+		Closed_val.Enabled = enabled
+		IP_Address.Enabled = enabled
+		Port.Enabled = enabled
+		User.Enabled = enabled
 	End Sub
 
 	''' <summary>
@@ -200,6 +207,56 @@ Public Class Ribbon1
 	End Sub
 
 
-End Class
+	Private Sub Channel_Click(sender As Object, e As RibbonControlEventArgs) Handles Channel.Click
+		If Channel.Checked Then
+			submaster.Checked = False
+		Else
+			submaster.Checked = True
+		End If
+	End Sub
 
+	Private Sub submaster_Click(sender As Object, e As RibbonControlEventArgs) Handles submaster.Click
+		If submaster.Checked Then
+			Channel.Checked = False
+		Else
+			Channel.Checked = True
+		End If
+	End Sub
+	''' <summary>
+	''' insert the ribbon values as custom xml in the project
+	''' </summary>
+	''' <param name="presentation"></param>
+	''' <remarks></remarks>
+	Private Sub addCustomXMLToPPT(ByVal presentation As PowerPoint.Presentation)
+		With Globals.Ribbons.Ribbon1
+			Dim xmlString As String =
+			   "<douser_controls>" & _
+				   "<console>" & _
+					   "<ip >" & .IP_Address.Text & "</ip>" & _
+					   "<port>" & .Port.Text & "</port>" & _
+					   "<user>" & .User.Text & "</user>" & _
+				   "</console>" & _
+					"<douser>" & _
+						"<channel>" & .Douser_Channel.Text & "</channel>" & _
+						"<submaster>" & .Douser_Sub.Text & "</submaster>" & _
+						"<open_val>" & .Open_val.Text & "</open_val>" & _
+						"<closed_val>" & .Closed_val.Text & "</closed_val>" & _
+						"<channel-sub>sub</channel-sub>" & _
+					"</douser>" & _
+					"<show>" & _
+						"<open_time>" & .OpenTime.Text & "</open_time>" & _
+						"<close_time>" & .CloseTime.Text & "</close_time>" & _
+					"</show>" & _
+			   "</douser_controls>"
+			Dim douserControls As Office.CustomXMLPart = presentation.CustomXMLParts.Add(xmlString)
+
+			'store the xml GUID in a custom property for later retrieval
+
+			presentation.CustomDocumentProperties.Add( _
+				"douser_controls", False, _
+				Office.MsoDocProperties.msoPropertyTypeString, douserControls.Id)
+		End With
+
+	End Sub
+End Class
 
